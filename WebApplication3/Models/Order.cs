@@ -21,11 +21,14 @@ namespace WebApplication3.Models
         [JsonIgnore]
         public User? User { get; set; }
 
-       
+       public int Quantity { get; set; }
 
-        
-        [JsonIgnore]
-        public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+
+        public int ProductId { get; set; }
+
+        //[NotMapped]
+
+        public List<Product> Products { get; set; } = new List<Product>();
 
     }
 

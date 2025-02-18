@@ -19,32 +19,29 @@ namespace WebApplication3.Services
 
         public async Task<Order> PlaceOrderAsync(Guid userId,PlaceOrder placeorder)
         {
-            var user = await dbContext.Users.FindAsync(userId);
+            var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
             if (user == null)
             {
                 return null;
             }
 
+            var product = await dbContext.Products.FindAsync(placeorder.ProductId);
+            if (product == null)
+            {
+                return null; 
+            }
+            int totalPrice = product.Price * placeorder.Quantity;
+
             var order = new Order
             {
                 UserId = userId,
                 IsDeleted = false,
-                OrderItems = new List<OrderItem>()
+                Quantity = placeorder.Quantity,
+                ProductId = placeorder.ProductId,
+                TotalPrice = totalPrice    
             };
 
-            foreach(var items in placeorder.OrderItems)
-            {
-                  var product = await dbContext.Products.FirstOrDefaultAsync(p => p.Id == items.ProductId);
-
-                var orderitem = new OrderItem
-                {
-                    ProductId = items.ProductId,
-                    Quantity = items.Quantity,
-                    Product = product
-                };
-                order.TotalPrice += product.Price * items.Quantity;
-                order.OrderItems.Add(orderitem);
-            }
+           
             dbContext.Orders.Add(order);
             await dbContext.SaveChangesAsync();
             return order;
@@ -61,7 +58,7 @@ namespace WebApplication3.Services
             
             var orders = await dbContext.Orders
                 .Where(o => !o.IsDeleted)
-                .Include(o => o.OrderItems)
+                
                 .Skip((pageNumber-1)*pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -74,39 +71,28 @@ namespace WebApplication3.Services
 
         public async Task<Order> UpdateOrderAsync(int orderId, UpdateOrder updateorder)
         {
-            var existingorder = await dbContext.Orders.Include(o => o.OrderItems).FirstOrDefaultAsync(o => o.Id == orderId);
+            var existingorder = await dbContext.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
             if (existingorder == null)
             {
                 return null;
             }
-              
-            foreach (var item in updateorder.OrderItems)
+
+            var product = await dbContext.Products
+                                         .FirstOrDefaultAsync(p => p.Id == updateorder.ProductId);
+            if (product == null)
             {
-                var product = existingorder.OrderItems.FirstOrDefault(oi => oi.ProductId == item.ProductId);
-                if (product != null)
-                {
-                    product.Quantity = item.Quantity;
-                    product.ProductId = item.ProductId;
-                    dbContext.Entry(product).State = EntityState.Modified;
-                }
-                else
-                {
-                    existingorder.OrderItems.Add(new OrderItem
-                    {
-                        ProductId = item.ProductId,
-                        Quantity = item.Quantity,
-                        OrderId = existingorder.Id
-                    });
-                }
-                dbContext.Orders.Update(existingorder);
-                await dbContext.SaveChangesAsync();
-
-
+                return null; 
             }
 
-            
-           
-            return existingorder;
+            existingorder.Quantity = updateorder.Quantity;
+            existingorder.ProductId = updateorder.ProductId;
+
+
+            existingorder.TotalPrice = existingorder.Quantity * product.Price;
+                dbContext.Orders.Update(existingorder);
+                await dbContext.SaveChangesAsync();
+                     
+           return existingorder;
         }
 
         public async Task DeleteOrderAsync(int orderId)
