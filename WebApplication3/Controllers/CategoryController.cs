@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using WebApplication3.Models;
+using WebApplication3.Models.Dtos;
 using WebApplication3.Services;
 
 namespace WebApplication3.Controllers
@@ -25,8 +25,8 @@ namespace WebApplication3.Controllers
             }
             try
             {
-                var createduser = await categoryService.CreateCategoryAsync(createcategory);
-                return Ok(createduser);
+                var createdcategory = await categoryService.CreateCategoryAsync(createcategory);
+                return Ok(createdcategory);
             }
             catch (Exception ex)
             {
@@ -62,7 +62,7 @@ namespace WebApplication3.Controllers
             try
             {
                 await categoryService.DeleteCategoryAsync(categoryId);
-                return NoContent();
+                return Ok();
             }
             catch (Exception ex)
             {

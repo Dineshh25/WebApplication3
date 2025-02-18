@@ -1,7 +1,7 @@
 ﻿using Azure.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using WebApplication3.Models;
+using WebApplication3.Models.Dtos;
 using WebApplication3.Services;
 
 namespace WebApplication3.Controllers
@@ -81,12 +81,13 @@ namespace WebApplication3.Controllers
             try
             {
                 await userService.DeleteUserAsync(userId);
-                return NoContent();
+                return Ok();
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
+                
     }
 }

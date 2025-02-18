@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebApplication3.Data;
 using WebApplication3.Models;
+using WebApplication3.Models.Dtos;
 
 namespace WebApplication3.Services
 {
@@ -14,15 +15,7 @@ namespace WebApplication3.Services
             this.dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<Category>> GetAllCategoriesAsync()
-        {
-            return await dbContext.Categories.Where(c => !c.IsDeleted).ToListAsync();
-        }
-
-        public async Task<Category> GetCategoryByIdAsync(int categoryId)
-        {
-            return await dbContext.Categories.FindAsync(categoryId);
-        }
+       
 
         public async Task<Category> CreateCategoryAsync(CreateCategory createcategory)
         {
@@ -37,6 +30,18 @@ namespace WebApplication3.Services
             return category;
         }
 
+       
+
+        public async Task<Category> GetCategoryByIdAsync(int categoryId)
+        {
+            return await dbContext.Categories.FindAsync(categoryId);
+        }
+
+        public async Task<IEnumerable<Category>> GetAllCategoriesAsync()
+        {
+            return await dbContext.Categories.Where(c => !c.IsDeleted).ToListAsync();
+        }
+
         public async Task<Category> UpdateCategoryAsync(int id, UpdateCategory updatecategory)
         {
             var existingCategory = await dbContext.Categories.FindAsync(id);
@@ -46,7 +51,6 @@ namespace WebApplication3.Services
             }
 
             existingCategory.Name = updatecategory.Name;
-            //existingCategory.IsDeleted = updatecategory.IsDeleted;
 
             dbContext.Categories.Update(existingCategory);
             await dbContext.SaveChangesAsync();
@@ -59,7 +63,11 @@ namespace WebApplication3.Services
             if (category != null)
             {
                 category.IsDeleted = true;
-                await dbContext.SaveChangesAsync(); ;
+                foreach(var product in category.Products)
+                {
+                    product.IsDeleted = true;
+                }
+                await dbContext.SaveChangesAsync(); 
             }
             
         }

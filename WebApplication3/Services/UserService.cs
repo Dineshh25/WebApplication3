@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebApplication3.Data;
 using WebApplication3.Models;
+using WebApplication3.Models.Dtos;
 
 namespace WebApplication3.Services
 {
@@ -12,21 +13,12 @@ namespace WebApplication3.Services
             this.dbContext = dbContext;
         }
 
-        public async Task<User> GetUserByIdAsync(Guid userId)
-        {
-            return await dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId && !u.IsDeleted);
-        }
-
-        public async Task<IEnumerable<User>> GetAllUsersAsync()
-        {
-            return await dbContext.Users.Where(u=> !u.IsDeleted).ToListAsync();
-        }
-
+       
         public async Task<User> CreateUserAsync(CreateUser createuser)
         {
             var user = new User
             {
-                Name = createuser.Name,
+                Username = createuser.Username,
                 Email = createuser.Email,
                 IsDeleted = false
             };
@@ -36,6 +28,16 @@ namespace WebApplication3.Services
 
             return user;
         }
+        public async Task<User> GetUserByIdAsync(Guid userId)
+        {
+            return await dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId && !u.IsDeleted);
+        }
+
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        {
+            return await dbContext.Users.Where(u => !u.IsDeleted).ToListAsync();
+        }
+
 
         public async Task<User> UpdateUserAsync(Guid id,UpdateUser updateuser)
         {
@@ -44,11 +46,9 @@ namespace WebApplication3.Services
             {
                 return null;
             }
-            existinguser.Name = updateuser.Name;
+            existinguser.Username = updateuser.Username;
             existinguser.Email = updateuser.Email;
-            //existinguser.IsDeleted = updateuser.IsDeleted;
-
-
+        
             dbContext.Users.Update(existinguser);
             await dbContext.SaveChangesAsync();
             return existinguser;

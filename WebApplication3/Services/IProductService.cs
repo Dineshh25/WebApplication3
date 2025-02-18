@@ -1,4 +1,5 @@
 ﻿using WebApplication3.Models;
+using WebApplication3.Models.Dtos;
 
 namespace WebApplication3.Services
 {
@@ -6,11 +7,13 @@ namespace WebApplication3.Services
     {
         Task<Product> CreateProductAsync(CreateProduct createproduct);
 
-        //Task<Product> UpdateProductAsync(int id, UpdateProduct updateproduct);
-        //Task DeleteProductAsync(int productId);
+        Task<Product> UpdateProductAsync(int id, UpdateProduct updateproduct);
+        Task DeleteProductAsync(int productId);
 
-        //Task<IEnumerable<Product>> GetAllProductsAsync();
+        Task<ICollection<ProductDto>> GetAllProductsAsync(int pageNumber, int pageSize);
 
-        Task<Product> GetProductByIdAsync(int productId);
+        Task<ProductDto> GetProductByIdAsync(int productId);
+
+        Task<ICollection<ProductDto>> GetFilteredProductAsync(int categoryId);
     }
 }

@@ -1,10 +1,8 @@
-﻿namespace WebApplication3.Models
+﻿namespace WebApplication3.Models.Dtos
 {
-    public class CreateCategory
+    public class UpdateCategory
     {
         public required string Name { get; set; }
-
        
-
     }
 }

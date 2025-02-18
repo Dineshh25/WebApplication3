@@ -1,8 +1,8 @@
-﻿namespace WebApplication3.Models
+﻿namespace WebApplication3.Models.Dtos
 {
     public class UpdateUser
     {
-        public string Name { get; set; }
+        public string Username { get; set; }
 
         public string Email { get; set; }
 
