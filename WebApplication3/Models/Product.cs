@@ -22,10 +22,10 @@ namespace WebApplication3.Models
         [ForeignKey("Category")]
         public  required int CategoryId { get; set; }
 
-        //[JsonIgnore]
+      
         public Category Category { get; set; }
 
-        //[JsonIgnore]
+     
         public ICollection<Order> Orders { get; set; } = new List<Order>();
     }
 }

@@ -37,9 +37,13 @@ namespace WebApplication3.Services
             return await dbContext.Categories.FindAsync(categoryId);
         }
 
-        public async Task<IEnumerable<Category>> GetAllCategoriesAsync()
+        public async Task<IEnumerable<Category>> GetAllCategoriesAsync(int pageNumber, int pageSize)
         {
-            return await dbContext.Categories.Where(c => !c.IsDeleted).ToListAsync();
+            return await dbContext.Categories
+                .Where(c => !c.IsDeleted)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
         }
 
         public async Task<Category> UpdateCategoryAsync(int id, UpdateCategory updatecategory)

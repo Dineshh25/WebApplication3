@@ -25,13 +25,14 @@ namespace WebApplication3.Services
 
             dbContext.Users.Add(user);
             await dbContext.SaveChangesAsync();
-
             return user;
         }
+
         public async Task<User> GetUserByIdAsync(Guid userId)
         {
             return await dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId && !u.IsDeleted);
         }
+
 
         public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
@@ -62,7 +63,6 @@ namespace WebApplication3.Services
                 user.IsDeleted = true;
                 await dbContext.SaveChangesAsync();
             }
-           
         }
 
         

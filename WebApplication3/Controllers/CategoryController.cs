@@ -71,9 +71,10 @@ namespace WebApplication3.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllCategoriesAsync()
+        public async Task<IActionResult> GetAllCategoriesAsync(int pageNumber = 1)
         {
-            var categories = await categoryService.GetAllCategoriesAsync();
+            int pageSize = 3;
+            var categories = await categoryService.GetAllCategoriesAsync(pageNumber,pageSize);
             return Ok(categories);
         }
 

@@ -24,8 +24,8 @@ namespace WebApplication3.Services
                 Name = createproduct.Name,
                 Price = createproduct.Price,
                 CategoryId = createproduct.CategoryId,
-               
                 IsDeleted = false
+
             };
 
             dbContext.Products.Add(product);

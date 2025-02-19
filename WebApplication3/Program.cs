@@ -1,6 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using WebApplication3.Data;
+using WebApplication3.Middleware;
 using WebApplication3.Services;
 
 namespace WebApplication3
@@ -12,8 +13,8 @@ namespace WebApplication3
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+           builder.Services.AddControllers();
 
-            builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -30,6 +31,7 @@ namespace WebApplication3
 
             var app = builder.Build();
 
+            app.UseMiddleware<GlobalExceptionHandler>();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {

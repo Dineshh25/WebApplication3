@@ -19,7 +19,7 @@ namespace WebApplication3.Services
 
         public async Task<Order> PlaceOrderAsync(Guid userId,PlaceOrder placeorder)
         {
-            var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId && !u.IsDeleted);
             if (user == null)
             {
                 return null;
@@ -55,30 +55,24 @@ namespace WebApplication3.Services
 
         public async Task<ICollection<Order>> GetAllOrdersAsync(int pageNumber, int pageSize)
         {
-            
-            var orders = await dbContext.Orders
-                .Where(o => !o.IsDeleted)
-                
-                .Skip((pageNumber-1)*pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            return orders;
-            
+            return await dbContext.Orders
+                                  .Where(o => !o.IsDeleted)
+                                  .Skip((pageNumber - 1) * pageSize)
+                                  .Take(pageSize)
+                                  .ToListAsync();
         }
 
        
 
         public async Task<Order> UpdateOrderAsync(int orderId, UpdateOrder updateorder)
         {
-            var existingorder = await dbContext.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
+            var existingorder = await dbContext.Orders.FirstOrDefaultAsync(o => o.Id == orderId && !o.IsDeleted);
             if (existingorder == null)
             {
                 return null;
             }
 
-            var product = await dbContext.Products
-                                         .FirstOrDefaultAsync(p => p.Id == updateorder.ProductId);
+            var product = await dbContext.Products.FirstOrDefaultAsync(p => p.Id == updateorder.ProductId);
             if (product == null)
             {
                 return null; 
@@ -89,15 +83,16 @@ namespace WebApplication3.Services
 
 
             existingorder.TotalPrice = existingorder.Quantity * product.Price;
-                dbContext.Orders.Update(existingorder);
-                await dbContext.SaveChangesAsync();
+            dbContext.Orders.Update(existingorder);
+            await dbContext.SaveChangesAsync();
                      
-           return existingorder;
+            return existingorder;
         }
 
         public async Task DeleteOrderAsync(int orderId)
         {
             var order = await dbContext.Orders.FindAsync(orderId);
+            if(order != null)
             {
                 order.IsDeleted = true;
                 await dbContext.SaveChangesAsync();

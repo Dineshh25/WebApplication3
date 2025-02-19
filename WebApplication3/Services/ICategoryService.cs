@@ -10,7 +10,7 @@ namespace WebApplication3.Services
         
         Task DeleteCategoryAsync(int categoryId);
 
-        Task<IEnumerable<Category>> GetAllCategoriesAsync();
+        Task<IEnumerable<Category>> GetAllCategoriesAsync(int pageNumber,int pageSize);
 
         Task<Category> GetCategoryByIdAsync(int categoryId);
     }

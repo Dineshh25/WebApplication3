@@ -61,7 +61,7 @@ namespace WebApplication3.Controllers
         {
             try
             {
-                await productService.DeleteProductAsync(productId);
+               await productService.DeleteProductAsync(productId);
                 return Ok();
             }
             catch (Exception ex)
@@ -81,7 +81,7 @@ namespace WebApplication3.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllProductAsync(int pageNumber)
+        public async Task<IActionResult> GetAllProductAsync(int pageNumber=1)
         {
             int pageSize = 3;
             var product = await productService.GetAllProductsAsync(pageNumber,pageSize);

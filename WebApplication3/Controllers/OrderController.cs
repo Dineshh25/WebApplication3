@@ -41,7 +41,7 @@ namespace WebApplication3.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllOrdersAsync(int pageNumber)
+        public async Task<IActionResult> GetAllOrdersAsync(int pageNumber =1)
         {
             int pageSize = 3;
             var orders = await orderService.GetAllOrdersAsync(pageNumber,pageSize);
